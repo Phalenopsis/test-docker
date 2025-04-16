@@ -1,13 +1,39 @@
 # Défini tes services
+services:
   # Défini le service `mysql`
+  mysql:
+    env_file: ".env"
     # Précise l'image que tu veux pull
+    image: mysql:8.0
+    container_name: db
     # Tu peux préciser la politique de rédémarrage du conteneur
+    restart: always
     # Crée les variables d'environnement
+    environment:
+      MYSQL_ROOT_PASSWORD: bla
+      MYSQL_DATABASE: db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: blabla
     # Précise le mapping de ports
+    ports:
+      - "8000:3306"
     # Précise sur quel volume seront persistées les données
+    volumes:
+      - db_data:/var/lib/mysql
   # Défini le service `spring-app`
+  spring-app:
+    env_file: ".env"
     # Précise que le build s'effectue dans le contexte actuel (pour aller cherche le Dockerfile)
+    build: .
     # Précise le mapping de ports
+    ports:
+      - "8080:8080"
     # Crée les variables d'environnement
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: blabla
     # Précise que ce service dépend du service précédent `mysql`
 # Défini tes volumes
+volumes: 
+  db_data:
